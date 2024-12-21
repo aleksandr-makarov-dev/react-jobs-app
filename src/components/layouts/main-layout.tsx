@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Helmet } from "react-helmet-async";
+import { BaseLayout } from "./base-layout";
 
 interface MainLayoutProps {
   title: string;
@@ -12,11 +13,8 @@ export function MainLayout({
   description = "",
 }: PropsWithChildren<MainLayoutProps>) {
   return (
-    <>
-      <Helmet title={title} defaultTitle="Default">
-        <meta name="description" content={description} />
-      </Helmet>
+    <BaseLayout title={title} description={description}>
       <main>{children}</main>
-    </>
+    </BaseLayout>
   );
 }
