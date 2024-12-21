@@ -1,6 +1,12 @@
 import { BaseLayout } from "@/components/layouts/base-layout";
+import { Alert } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
+import {
+  UserRegisterInput,
+  UserRegisterInputSchema,
+  useUserRegister,
+} from "@/modules/users/api/register";
 import {
   Box,
   Button,
@@ -12,8 +18,25 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 
 export function Register() {
+  const register = useUserRegister();
+
+  const form = useForm<UserRegisterInput>({
+    resolver: zodResolver(UserRegisterInputSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const handleSubmitForm = (input: UserRegisterInput) => {
+    register.mutate({ data: input });
+  };
+
   return (
     <BaseLayout title="Registration">
       <Stack
@@ -39,20 +62,58 @@ export function Register() {
                   Start using Jobs in your company
                 </Text>
               </Stack>
-              <form>
+              <form onSubmit={form.handleSubmit(handleSubmitForm)}>
                 <Stack spaceY={4}>
+                  {register.isError && (
+                    <Alert
+                      status="error"
+                      title={register.error.response?.data.detail}
+                    ></Alert>
+                  )}
                   <Stack spaceY={4}>
-                    <Field label="Email">
-                      <Input colorPalette="blue" type="email" />
-                    </Field>
-                    <Field label="Password">
-                      <PasswordInput colorPalette="blue" />
-                    </Field>
-                    <Field label="Confirm Password">
-                      <PasswordInput colorPalette="blue" />
-                    </Field>
+                    <Controller
+                      control={form.control}
+                      name="email"
+                      render={({ field, fieldState }) => (
+                        <Field
+                          label="Email"
+                          invalid={fieldState.invalid}
+                          errorText={fieldState.error?.message}
+                        >
+                          <Input colorPalette="blue" type="email" {...field} />
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      control={form.control}
+                      name="password"
+                      render={({ field, fieldState }) => (
+                        <Field
+                          label="Password"
+                          invalid={fieldState.invalid}
+                          errorText={fieldState.error?.message}
+                        >
+                          <PasswordInput colorPalette="blue" {...field} />
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field, fieldState }) => (
+                        <Field
+                          label="Confirm Password"
+                          invalid={fieldState.invalid}
+                          errorText={fieldState.error?.message}
+                        >
+                          <PasswordInput colorPalette="blue" {...field} />
+                        </Field>
+                      )}
+                    />
                   </Stack>
-                  <Button colorPalette="blue">Create an account</Button>
+                  <Button colorPalette="blue" type="submit">
+                    Create an account
+                  </Button>
                 </Stack>
               </form>
               <Text fontSize="sm" textAlign="center">

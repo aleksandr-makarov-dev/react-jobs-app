@@ -1,7 +1,7 @@
 import { BaseLayout } from "@/components/layouts/base-layout";
-import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Alert } from "@/components/ui/alert";
+import { Field } from "@/components/ui/field";
 import {
   UserLoginInput,
   UserLoginInputSchema,
@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 export function Login() {
   const navigate = useNavigate();
 
-  const { mutate, isPending, isError, error } = useUserLogin();
+  const login = useUserLogin();
 
   const form = useForm<UserLoginInput>({
     resolver: zodResolver(UserLoginInputSchema),
@@ -36,7 +36,7 @@ export function Login() {
   });
 
   const handleSubmitForm = (input: UserLoginInput) => {
-    mutate(
+    login.mutate(
       { data: input },
       {
         onSuccess: () => {
@@ -73,10 +73,10 @@ export function Login() {
               </Stack>
               <form onSubmit={form.handleSubmit(handleSubmitForm)}>
                 <Stack spaceY={4}>
-                  {isError && (
+                  {login.isError && (
                     <Alert
                       status="error"
-                      title={error.response?.data.detail}
+                      title={login.error.response?.data.detail}
                     ></Alert>
                   )}
                   <Stack spaceY={4}>
@@ -120,7 +120,7 @@ export function Login() {
                   <Button
                     type="submit"
                     colorPalette="blue"
-                    loading={isPending}
+                    loading={login.isPending}
                     loadingText="Logging in..."
                   >
                     Log in
@@ -143,4 +143,48 @@ export function Login() {
       </Stack>
     </BaseLayout>
   );
+}
+
+{
+  /* <Field.Root>
+  <Box pos="relative" w="full">
+    <Input
+      className="peer"
+      placeholder=""
+      variant="flushed"
+      colorPalette="blue"
+    />
+    <Field.Label css={floatingStyles}>
+      Email
+    </Field.Label>
+  </Box>
+</Field.Root>
+
+const floatingStyles = defineStyle({
+  position: "absolute",
+  background: "bg",
+  paddingX: "0.5",
+  transition: "all 0.2s ease-in-out",
+  top: "2.5", // Initial position for the label
+  left: "2", // Adjusted to align at the start
+  fontSize: "md", // Default font size
+  pointerEvents: "none",
+  fontWeight: "normal",
+
+  // Style when the placeholder is shown (field is not focused or filled)
+  _peerPlaceholderShown: {
+    color: "fg.muted",
+    top: "2.5", // Keep it aligned with the input field
+    left: "0", // Slightly inset to match the input alignment
+    fontSize: "md", // Default size for unfilled state
+  },
+
+  // Style when the field is focused or has content
+  _peerFocusVisible: {
+    color: "fg",
+    top: "-3", // Move the label to the top
+    left: "0", // Align with the beginning
+    fontSize: "sm", // Shrink the font size
+  },
+}); */
 }

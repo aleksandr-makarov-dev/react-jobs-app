@@ -7,6 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query";
 import { Register } from "./users/register";
 import { Login } from "./users/login";
+import { Vacancy } from "./(main)/vacancy";
 
 export function App() {
   return (
@@ -18,6 +19,7 @@ export function App() {
               <Routes>
                 <Route path="/">
                   <Route index element={<Home />} />
+                  <Route path="vacancy" element={<Vacancy />} />
                 </Route>
                 <Route path="/users">
                   <Route path="register" element={<Register />} />
